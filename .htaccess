@@ -1,0 +1,29 @@
+DirectoryIndex index.html index.php
+Options -Indexes
+AddType application/manifest+json .webmanifest
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; worker-src 'self'; manifest-src 'self'"
+</IfModule>
+
+<FilesMatch "^(?:\.env(?:\..*)?|composer\.(?:json|lock)|backup_database\.sql|l\.html|d\.html|create_smtp_table\.php)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^(?:security|db_connect|functions|session_auth|header|sidebar|topbar|footer|log_helper|email_helper|generate_quotation|modal_(?:tambah_guru|edit_guru|pelajar|edit_pelajar|delete))\.php$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(?:\.git|\.agents|\.codex|database|vendor|PHPMailer|storage)/ - [F,L,NC]
+    RewriteRule ^uploads/quotations/ - [F,L,NC]
+    RewriteRule ^invoices/ - [F,L,NC]
+    RewriteRule ^uploads/.*\.(?:php|phtml|phar)$ - [F,L,NC]
+    RewriteRule ^js/settings\.html$ - [F,L,NC]
+    RewriteRule ^(?:portal|login)/?$ index.php [QSA,L]
+</IfModule>

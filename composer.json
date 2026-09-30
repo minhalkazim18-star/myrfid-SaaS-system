@@ -1,0 +1,11 @@
+{
+    "license": "proprietary",
+    "scripts": {
+        "test": "@php tests/security_smoke.php"
+    },
+    "require": {
+        "google/apiclient": "^2.15.0",
+        "dompdf/dompdf": "^3.1",
+        "phpmailer/phpmailer": "^7.0"
+    }
+}

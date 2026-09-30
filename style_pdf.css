@@ -1,0 +1,19 @@
+body {
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    line-height: normal;
+    font-weight: 300;
+    overflow-x: hidden !important;
+}
+
+table {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+}
+
+tr, td, th {
+  	font-size: 11px;
+	border: 1px solid #ddd;
+    padding: 8px;
+}

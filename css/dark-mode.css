@@ -1,0 +1,87 @@
+/* --- WARNA ASAS DARK MODE --- */
+body.dark-mode {
+    background-color: #1a1a1a !important; /* Latar belakang gelap */
+    color: #e0e0e0 !important; /* Tulisan cerah */
+}
+
+/* --- UPDATE CONTENT BOX --- */
+.dark-mode #content {
+    background-color: #1a1a1a !important;
+}
+
+.dark-mode .white_shd {
+    background-color: #2d2d2d !important; /* Kotak putih jadi kelabu gelap */
+    color: #fff !important;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5) !important;
+}
+
+/* --- HEADER / TOPBAR --- */
+.dark-mode .topbar {
+    background-color: #222 !important;
+    border-bottom: 1px solid #444 !important;
+}
+
+/* --- SIDEBAR --- */
+.dark-mode #sidebar {
+    background-color: #000 !important;
+}
+.dark-mode #sidebar ul li a {
+    background-color: #000 !important;
+    color: #ccc !important;
+}
+.dark-mode #sidebar ul li a:hover, 
+.dark-mode #sidebar ul li.active > a {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+
+/* --- TABLE --- */
+.dark-mode .table {
+    color: #e0e0e0 !important;
+    background-color: #2d2d2d !important;
+}
+.dark-mode .table thead th {
+    background-color: #444 !important;
+    color: #fff !important;
+    border-color: #555 !important;
+}
+.dark-mode .table td, .dark-mode .table th {
+    border-color: #444 !important;
+}
+
+/* --- INPUT & FORM --- */
+.dark-mode .form-control {
+    background-color: #333 !important;
+    border: 1px solid #555 !important;
+    color: #fff !important;
+}
+.dark-mode .form-control:focus {
+    background-color: #444 !important;
+    color: #fff !important;
+}
+
+/* --- MODAL (POPUP) --- */
+.dark-mode .modal-content {
+    background-color: #2d2d2d !important;
+    color: #fff !important;
+}
+.dark-mode .modal-header {
+    border-bottom: 1px solid #444 !important;
+}
+.dark-mode .modal-footer {
+    border-top: 1px solid #444 !important;
+    background-color: #222 !important;
+}
+.dark-mode .close {
+    color: #fff !important;
+    text-shadow: none !important;
+}
+
+/* --- CARD HEADER --- */
+.dark-mode .graph_head {
+    background-color: #333 !important;
+    border-bottom: 1px solid #444 !important;
+}
+.dark-mode .heading1 h2 {
+    color: #fff !important;
+}

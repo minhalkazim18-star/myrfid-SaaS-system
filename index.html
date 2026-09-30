@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="ms">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRS – Digital Registration System | Kehadiran RMT</title>
+    <meta name="description"
+        content="Sistem pengurusan kehadiran murid RMT berasaskan RFID untuk sekolah. Rekod masa nyata, laporan tersusun dan pelan mampu milik.">
+    <meta name="theme-color" content="#102c45">
+    <link rel="icon" href="images/app_icon.png" type="image/png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            /* Brand Colors */
+            --navy: #1C2530;
+            --green: #1FA971;
+            --green-hover: #178a5b;
+            --orange: #E8912E;
+            --offwhite: #F1F3EE;
+
+            /* Support Colors */
+            --white: #FFFFFF;
+            --gray-light: #E0E5DF;
+            --gray-text: #5A6B7C;
+
+            /* Typography */
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'IBM Plex Sans', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+            --transition: 0.24s var(--ease-out);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        section,
+        header {
+            scroll-margin-top: 84px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--offwhite);
+            color: var(--navy);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Utility */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition), color var(--transition), border-color var(--transition),
+                box-shadow var(--transition), transform var(--transition);
+            border: none;
+            font-family: var(--font-body);
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .btn-sm {
+            padding: 10px 18px;
+            font-size: 0.925rem;
+        }
+
+        .btn-primary {
+            background-color: var(--green);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--green-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(31, 169, 113, 0.25);
+        }
+
+        .btn-secondary {
+            background-color: var(--navy);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background-color: #121820;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(28, 37, 48, 0.25);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--navy);
+            border: 2px solid var(--navy);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--navy);
+            color: var(--white);
+        }
+
+        .btn-play-icon {
+            display: inline-grid;
+            place-items: center;
+            width: 24px;
+            height: 24px;
+            padding-left: 2px;
+            color: var(--white);
+            background: var(--navy);
+            border-radius: 50%;
+            font-size: 9px;
+            transition: color var(--transition), background-color var(--transition);
+        }
+
+        .btn-outline:hover .btn-play-icon {
+            color: var(--navy);
+            background: var(--white);
+        }
+
+        .demo-video-modal[hidden] {
+            display: none;
+        }
+
+        .demo-video-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .demo-video-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 23, 35, .78);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity .24s ease;
+        }
+
+        .demo-video-dialog {
+            position: relative;
+            width: min(920px, 100%);
+            overflow: hidden;
+            background: var(--white);
+            border: 1px solid rgba(255, 255, 255, .3);
+            border-radius: 18px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .32);
+            opacity: 0;
+            transform: translateY(16px) scale(.98);
+            transition: opacity .24s ease, transform .24s var(--ease-out);
+        }
+
+        .demo-video-modal.is-open .demo-video-backdrop,
+        .demo-video-modal.is-open .demo-video-dialog {
+            opacity: 1;
+        }
+
+        .demo-video-modal.is-open .demo-video-dialog {
+            transform: translateY(0) scale(1);
+        }
+
+        .demo-video-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 18px 20px;
+            color: var(--white);
+            background: var(--navy);
+        }
+
+        .demo-video-header h2 {
+            margin: 0 0 2px;
+            font-size: 1.2rem;
+        }
+
+        .demo-video-header p {
+            margin: 0;
+            color: rgba(255, 255, 255, .68);
+            font-size: .86rem;
+        }
+
+        .demo-video-close {
+            display: inline-grid;
+            flex: 0 0 38px;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            color: var(--white);
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .16);
+            border-radius: 50%;
+            cursor: pointer;
+            font: inherit;
+            font-size: 1.35rem;
+            line-height: 1;
+            transition: background-color var(--transition), transform var(--transition);
+        }
+
+        .demo-video-close:hover,
+        .demo-video-close:focus-visible {
+            background: rgba(255, 255, 255, .2);
+            outline: none;
+            transform: rotate(6deg);
+        }
+
+        .demo-video-player {
+            display: block;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #07111b;
+            object-fit: contain;
+        }
+
+        body.demo-video-open {
+            overflow: hidden;
+        }
+
+        .section-padding {
+            padding: 96px 0;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .section-header {
+            margin-bottom: 48px;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-title {
+            font-size: 2.75rem;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            font-size: 1.125rem;
+            color: var(--gray-text);
+        }
+
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity .58s var(--ease-out), transform .58s var(--ease-out);
+            will-change: opacity, transform;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            will-change: auto;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(241, 243, 238, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(224, 229, 223, 0.8);
+            transition: background-color var(--transition), box-shadow var(--transition), padding var(--transition);
+        }
+
+        .navbar.scrolled {
+            background-color: rgba(255, 255, 255, .94);
+            box-shadow: 0 8px 30px rgba(28, 37, 48, .08);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-heading);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--navy);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 4px;
+        }
+
+        .nav-login {
+            color: var(--navy);
+            background: var(--white);
+            border: 1px solid #cbd4dc;
+        }
+
+        .nav-login:hover {
+            color: var(--green-hover);
+            border-color: var(--green);
+            background: #f8fcfa;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--navy);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--green);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.75rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--navy);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            padding: 154px 0 94px;
+            min-height: min(900px, 100vh);
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3.75rem;
+            margin-bottom: 24px;
+            color: var(--navy);
+            letter-spacing: -1px;
+        }
+
+        .hero-content h1 span {
+            color: var(--green);
+        }
+
+        .hero-content p {
+            font-size: 1.18rem;
+            color: var(--gray-text);
+            margin-bottom: 32px;
+            max-width: 520px;
+        }
+
+        .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            color: var(--green-hover);
+            font-size: .82rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .hero-kicker::before {
+            content: '';
+            width: 24px;
+            height: 2px;
+            background: var(--green);
+        }
+
+        .hero-note {
+            display: block;
+            margin-top: 16px;
+            color: #748394;
+            font-size: .88rem;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 16px;
+        }
+
+        /* --- Signature Visual: Terminal RMT --- */
+        .terminal-wrapper {
+            position: relative;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 32px 64px rgba(28, 37, 48, 0.1);
+            border: 1px solid var(--gray-light);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(0);
+            transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out);
+        }
+
+        .terminal-wrapper:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 38px 70px rgba(28, 37, 48, .13);
+        }
+
+        .terminal-header {
+            background: var(--navy);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.r {
+            background: #FF5F56;
+        }
+
+        .dot.y {
+            background: #FFBD2E;
+        }
+
+        .dot.g {
+            background: #27C93F;
+        }
+
+        .terminal-title {
+            color: var(--offwhite);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            margin-left: auto;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-indicator {
+            width: 8px;
+            height: 8px;
+            background-color: var(--green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .terminal-body {
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            min-height: 400px;
+        }
+
+        .reader-section {
+            background: #F8F9F7;
+            border-right: 1px solid var(--gray-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+        }
+
+        .usb-cable {
+            position: absolute;
+            bottom: 0;
+            width: 6px;
+            height: 60px;
+            background: #D1D5DB;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .usb-cable::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -4px;
+            width: 14px;
+            height: 16px;
+            background: #9CA3AF;
+            border-radius: 2px;
+        }
+
+        .reader-device {
+            width: 120px;
+            height: 160px;
+            background: var(--navy);
+            border-radius: 12px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            z-index: 2;
+        }
+
+        .reader-device::before {
+            content: 'RFID USB';
+            position: absolute;
+            bottom: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+        }
+
+        .reader-icon {
+            color: var(--green);
+            width: 48px;
+            height: 48px;
+        }
+
+        .reader-icon path,
+        .reader-icon circle {
+            fill: none;
+            stroke: currentColor;
+            stroke-linecap: round;
+            stroke-width: 1.8;
+        }
+
+        .ripple-effect {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--green);
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        .ripple-effect.active {
+            animation: rippleAnim .75s var(--ease-out);
+        }
+
+        .card-anim {
+            position: absolute;
+            top: 54px;
+            width: 86px;
+            height: 54px;
+            background: var(--white);
+            border-radius: 6px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--navy);
+            font-size: 1.75rem;
+            z-index: 3;
+            transform: translateY(-16px);
+            opacity: 0;
+            border: 1px solid var(--gray-light);
+        }
+
+        .card-anim::after {
+            content: '';
+            position: absolute;
+            left: 10px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--orange);
+        }
+
+        .card-anim.active {
+            animation: cardTap 3.2s var(--ease-out) infinite;
+        }
+
+        .rfid-card-icon {
+            width: 30px;
+            height: 30px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 1.7;
+        }
+
+        .screen-section {
+            padding: 24px 32px;
+            background: var(--navy);
+            color: var(--white);
+            font-family: var(--font-mono);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .screen-header-inner {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: var(--green);
+            letter-spacing: 1px;
+        }
+
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex-grow: 1;
+        }
+
+        .log-item {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 16px;
+            font-size: 0.9rem;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            animation: slideIn 0.3s ease-out forwards;
+            opacity: 0;
+            transform: translateX(15px);
+        }
+
+        .log-item .time {
+            color: var(--gray-text);
+        }
+
+        .log-item .name {
+            color: var(--offwhite);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .log-item .id {
+            color: var(--orange);
+            margin-right: 8px;
+        }
+
+        .log-item .status {
+            color: var(--green);
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+        }
+
+        /* --- Stats --- */
+        .stats {
+            background: var(--navy);
+            color: var(--white);
+            padding: 54px 0;
+            position: relative;
+        }
+
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--green), var(--orange));
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 1.55rem;
+            color: var(--green);
+            font-family: var(--font-heading);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .stat-item p {
+            max-width: 250px;
+            margin: 0 auto;
+            font-size: .95rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 400;
+        }
+
+        .feature-symbol {
+            font-family: var(--font-heading);
+            font-size: 1.65rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        /* --- Features --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 48px;
+            border-radius: 20px;
+            border: 1px solid var(--gray-light);
+            transition: opacity .58s var(--ease-out), transform .42s var(--ease-out),
+                box-shadow var(--transition), border-color var(--transition);
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 20px 40px rgba(28, 37, 48, 0.06);
+            transform: translateY(-3px);
+            border-color: rgba(31, 169, 113, 0.2);
+        }
+
+        .feature-icon {
+            width: 72px;
+            height: 72px;
+            background: rgba(31, 169, 113, 0.1);
+            color: var(--green);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.25rem;
+            margin-bottom: 24px;
+        }
+
+        .feature-card:nth-child(2) .feature-icon,
+        .feature-card:nth-child(4) .feature-icon {
+            background: rgba(232, 145, 46, 0.1);
+            color: var(--orange);
+        }
+
+        .feature-card h3 {
+            font-size: 1.75rem;
+            margin-bottom: 16px;
+            color: var(--navy);
+        }
+
+        .feature-card p {
+            color: var(--gray-text);
+            font-size: 1.125rem;
+        }
+
+        /* --- How it works --- */
+        .how-it-works {
+            background-color: var(--white);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            position: relative;
+        }
+
+        .step-item {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number {
+            width: 90px;
+            height: 90px;
+            background: var(--offwhite);
+            border: 2px solid var(--green);
+            color: var(--navy);
+            font-family: var(--font-mono);
+            font-size: 2.25rem;
+            font-weight: 600;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 32px;
+            position: relative;
+        }
+
+        .step-number::after {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            opacity: 0.15;
+        }
+
+        .step-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+        }
+
+        .step-item p {
+            color: var(--gray-text);
+            font-size: 1.1rem;
+        }
+
+        /* Connect lines between steps */
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 45px;
+            left: 100px;
+            right: 100px;
+            height: 2px;
+            border-top: 2px dashed var(--gray-light);
+            z-index: 0;
+        }
+
+        /* --- Pricing --- */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            align-items: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .price-card {
+            background: var(--white);
+            padding: 48px;
+            border-radius: 20px;
+            border: 1px solid var(--gray-light);
+            position: relative;
+            transition: opacity .58s var(--ease-out), transform .42s var(--ease-out),
+                box-shadow var(--transition), border-color var(--transition);
+        }
+
+        .price-card:hover {
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.05);
+        }
+
+        .price-card.popular {
+            border: 2px solid var(--green);
+            transform: scale(1.025);
+            box-shadow: 0 24px 48px rgba(31, 169, 113, 0.12);
+        }
+
+        .price-card.popular:hover {
+            transform: scale(1.025) translateY(-3px);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--green);
+            color: var(--white);
+            padding: 6px 20px;
+            border-radius: 24px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: var(--font-heading);
+            letter-spacing: 0.5px;
+        }
+
+        .price-header {
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .price-header h3 {
+            font-size: 1.75rem;
+            margin-bottom: 12px;
+        }
+
+        .price-amount {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .price-amount span {
+            font-size: 1.125rem;
+            color: var(--gray-text);
+            font-family: var(--font-body);
+            font-weight: 400;
+        }
+
+        .price-desc {
+            color: var(--gray-text);
+            font-size: 1rem;
+        }
+
+        .price-features {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+
+        .price-features li {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+            color: var(--navy);
+        }
+
+        .list-icon {
+            width: 23px;
+            height: 23px;
+            flex: 0 0 23px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
+            color: var(--green);
+            background: rgba(31, 169, 113, .1);
+            border-radius: 50%;
+            font-size: .78rem;
+            font-weight: 700;
+        }
+
+        .list-icon.info {
+            color: var(--gray-text);
+            background: rgba(90, 107, 124, .1);
+        }
+
+        .price-highlight {
+            background: rgba(31, 169, 113, 0.1);
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--green);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .price-highlight .list-icon {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .pricing-note {
+            max-width: 720px;
+            margin: 42px auto 0;
+            color: var(--gray-text);
+            font-size: .92rem;
+            text-align: center;
+        }
+
+        .price-card .btn {
+            width: 100%;
+            padding: 16px;
+        }
+
+        /* --- Final CTA --- */
+        .final-cta {
+            background: linear-gradient(135deg, var(--green), #148f5e);
+            color: var(--white);
+            text-align: center;
+            padding: 78px 40px;
+            border-radius: 32px;
+            margin: 0 24px 100px;
+            box-shadow: 0 24px 48px rgba(31, 169, 113, 0.2);
+        }
+
+        .final-cta h2 {
+            font-size: 3rem;
+            margin-bottom: 24px;
+        }
+
+        .final-cta p {
+            font-size: 1.25rem;
+            margin-bottom: 36px;
+            opacity: 0.9;
+        }
+
+        .final-cta-actions {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .final-cta .btn-secondary {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .final-cta .btn-outline {
+            border-color: var(--white);
+            color: var(--white);
+        }
+
+        .final-cta .btn-outline:hover {
+            background: var(--white);
+            color: var(--green);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: var(--navy);
+            color: var(--white);
+            padding: 80px 0 24px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 80px;
+            margin-bottom: 64px;
+        }
+
+        .footer-brand .logo {
+            color: var(--white);
+            margin-bottom: 24px;
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 320px;
+            font-size: 1.05rem;
+        }
+
+        .footer-links h4 {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+            color: var(--offwhite);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--green);
+            padding-left: 4px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 32px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid rgba(31, 169, 113, .35);
+            outline-offset: 3px;
+        }
+
+        /* --- Animations --- */
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(31, 169, 113, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 6px rgba(31, 169, 113, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(31, 169, 113, 0);
+            }
+        }
+
+        @keyframes cardTap {
+            0%,
+            8% {
+                transform: translateY(-16px);
+                opacity: 0;
+            }
+
+            18% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            38% {
+                transform: translateY(62px);
+                opacity: 1;
+            }
+
+            45% {
+                transform: translateY(62px) scale(.96);
+                opacity: 1;
+            }
+
+            54% {
+                transform: translateY(62px);
+                opacity: 1;
+            }
+
+            76% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            88%,
+            100% {
+                transform: translateY(-16px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes rippleAnim {
+            0% {
+                transform: scale(0.5);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 1024px) {
+            .hero-grid {
+                gap: 40px;
+            }
+
+            .hero-content h1 {
+                font-size: 3.25rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 28px;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .price-card.popular {
+                transform: none;
+            }
+
+            .price-card.popular:hover {
+                transform: translateY(-4px);
+            }
+
+            .steps-grid::before {
+                display: none;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: flex;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--white);
+                flex-direction: column;
+                gap: 20px;
+                max-height: 0;
+                padding: 0 32px;
+                overflow: hidden;
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+                transform: translateY(-8px);
+                border-bottom: 1px solid transparent;
+                transition: max-height .38s var(--ease-out), padding .38s var(--ease-out), opacity .24s ease,
+                    transform .38s var(--ease-out), visibility 0s linear .38s, border-color .24s ease,
+                    box-shadow .24s ease;
+            }
+
+            .nav-actions {
+                width: 100%;
+                margin: 4px 0 0;
+                flex-direction: column;
+            }
+
+            .nav-actions .btn {
+                width: 100%;
+            }
+
+            .nav-links.active {
+                display: flex;
+                max-height: 430px;
+                padding: 28px 32px 32px;
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+                transform: translateY(0);
+                border-bottom-color: var(--gray-light);
+                box-shadow: 0 18px 32px rgba(28, 37, 48, .1);
+                transition-delay: 0s;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero {
+                padding: 128px 0 74px;
+                min-height: 0;
+            }
+
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-content p {
+                margin: 0 auto 40px;
+            }
+
+            .hero-btns {
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            .hero-btns .btn {
+                width: 100%;
+            }
+
+            .terminal-body {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .reader-section {
+                border-right: none;
+                border-bottom: 1px solid var(--gray-light);
+                padding: 60px 20px;
+            }
+
+            .screen-section {
+                min-height: 280px;
+                padding: 20px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .final-cta {
+                margin: 0;
+                border-radius: 0;
+                padding: 80px 24px;
+            }
+
+            .final-cta h2 {
+                font-size: 2.25rem;
+            }
+
+            .final-cta .hero-btns {
+                flex-direction: column;
+            }
+
+            .final-cta-actions {
+                flex-direction: column;
+            }
+
+            .final-cta-actions .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .container {
+                padding: 0 18px;
+            }
+
+            .navbar {
+                padding: 15px 0;
+            }
+
+            .logo img {
+                height: 34px !important;
+            }
+
+            .hero-content h1 {
+                font-size: 2.55rem;
+                letter-spacing: -.7px;
+            }
+
+            .hero-content p {
+                font-size: 1.04rem;
+            }
+
+            .section-padding {
+                padding: 72px 0;
+            }
+
+            .section-title {
+                font-size: 2.1rem;
+            }
+
+            .section-header {
+                margin-bottom: 38px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .terminal-wrapper {
+                transform: none;
+            }
+
+            .screen-section {
+                min-height: 240px;
+            }
+
+            .feature-card,
+            .price-card {
+                padding: 30px 24px;
+            }
+
+            .price-amount {
+                font-size: 2.55rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+            }
+
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+
+            .card-anim {
+                opacity: 1;
+                transform: translateY(50px);
+                animation: none !important;
+            }
+
+            .ripple-effect {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#utama" class="logo" aria-label="DRS - halaman utama">
+                <img src="images/logo_drs.png" alt="DRS Logo" style="height: 40px; width: auto;">
+            </a>
+            <div class="nav-links" id="mainNavigation">
+                <a href="#ciri-ciri" class="nav-link">Ciri-ciri</a>
+                <a href="#cara-fungsi" class="nav-link">Cara Ia Berfungsi</a>
+                <a href="#harga" class="nav-link">Harga</a>
+                <div class="nav-actions">
+                    <a href="index.php" class="btn btn-sm nav-login">Log Masuk</a>
+                    <a href="register_school.php" class="btn btn-sm btn-primary">Daftar Sekolah <span aria-hidden="true">→</span></a>
+                </div>
+            </div>
+            <button class="mobile-menu-btn" type="button" aria-label="Buka menu" aria-controls="mainNavigation"
+                aria-expanded="false">
+                <span aria-hidden="true">☰</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="hero" id="utama">
+        <div class="container hero-grid">
+            <div class="hero-content reveal">
+                <span class="hero-kicker">Direka khusus untuk sekolah</span>
+                <h1>Kehadiran murid RMT,<br>selesai dengan <span>satu tap</span></h1>
+                <p>Sistem kehadiran berasaskan RFID yang membantu sekolah merekod agihan RMT dengan cepat, tersusun dan
+                    mudah disemak.</p>
+                <div class="hero-btns">
+                    <a href="register_school.php" class="btn btn-primary">Daftar Sekolah</a>
+                    <button type="button" class="btn btn-outline" id="openDemoVideo" aria-haspopup="dialog"
+                        aria-controls="demoVideoModal">
+                        <span class="btn-play-icon" aria-hidden="true">▶</span>
+                        Lihat Cara Berfungsi
+                    </button>
+                </div>
+                <span class="hero-note">Pembaca RFID dan pemasangan disertakan dalam pelan.</span>
+            </div>
+
+            <!-- Signature Visual: Terminal RMT -->
+            <div class="hero-visual reveal">
+                <div class="terminal-wrapper">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <span class="dot r" aria-hidden="true">&#8203;</span>
+                            <span class="dot y" aria-hidden="true">&#8203;</span>
+                            <span class="dot g" aria-hidden="true">&#8203;</span>
+                        </div>
+                        <div class="terminal-title">
+                            <div class="pulse-indicator"></div>
+                            drs-terminal-live
+                        </div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="reader-section">
+                            <div class="usb-cable"></div>
+                            <div class="card-anim active">
+                                <svg class="rfid-card-icon" viewBox="0 0 32 32" aria-hidden="true">
+                                    <rect x="4" y="7" width="24" height="18" rx="3"></rect>
+                                    <circle cx="11" cy="15" r="2.5"></circle>
+                                    <path d="M8 21c.6-2 1.6-3 3-3s2.4 1 3 3M18 13h6M18 17h6M18 21h4"></path>
+                                </svg>
+                            </div>
+                            <div class="reader-device">
+                                <svg class="reader-icon" viewBox="0 0 48 48" aria-hidden="true">
+                                    <circle cx="15" cy="24" r="2"></circle>
+                                    <path d="M20 18a8 8 0 0 1 0 12M25 13a15 15 0 0 1 0 22M30 8a22 22 0 0 1 0 32"></path>
+                                </svg>
+                                <div class="ripple-effect" id="animRipple"></div>
+                            </div>
+                        </div>
+                        <div class="screen-section">
+                            <div class="screen-header-inner">
+                                <span>LOG KEHADIRAN RMT</span>
+                                <span>HARI INI</span>
+                            </div>
+                            <div class="log-list" id="logList">
+                                <!-- Logs populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Product highlights -->
+    <section class="stats">
+        <div class="container stats-grid reveal">
+            <div class="stat-item">
+                <h3>Pembaca RFID USB</h3>
+                <p>Pemasangan ringkas tanpa perkakasan proprietari.</p>
+            </div>
+            <div class="stat-item">
+                <h3>Rekod Masa Nyata</h3>
+                <p>Setiap imbasan disimpan bersama tarikh dan masa.</p>
+            </div>
+            <div class="stat-item">
+                <h3>Laporan Tersusun</h3>
+                <p>Semak dan eksport rekod sekolah dalam PDF atau Excel.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section-padding features" id="ciri-ciri">
+        <div class="container">
+            <div class="section-header text-center reveal">
+                <h2 class="section-title">Kenapa pilih DRS?</h2>
+                <p class="section-desc">Dibina khusus untuk menyelesaikan masalah guru penyelaras RMT menguruskan
+                    kehadiran secara manual, dengan kos paling minimum.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card reveal">
+                    <div class="feature-icon"><span class="feature-symbol" aria-hidden="true">✓</span></div>
+                    <h3>Akses Mengikut Peranan</h3>
+                    <p>Akaun pentadbir dan staf diurus mengikut sekolah. Log masuk Google turut tersedia apabila
+                        dikonfigurasikan.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon"><span class="feature-symbol" aria-hidden="true">RF</span></div>
+                    <h3>Imbasan RFID Pantas</h3>
+                    <p>Murid hanya perlu mengimbas kad atau tag RFID. Sistem merekod kehadiran dan cap masa secara
+                        automatik ke dalam pangkalan data.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon"><span class="feature-symbol" aria-hidden="true">RM</span></div>
+                    <h3>Perkakasan Praktikal</h3>
+                    <p>DRS menggunakan pembaca RFID USB yang disokong, jadi sekolah tidak perlu menyediakan sistem
+                        perkakasan yang rumit.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon"><span class="feature-symbol" aria-hidden="true">▤</span></div>
+                    <h3>Laporan Automatik</h3>
+                    <p>Semak laporan harian, mingguan dan bulanan. Rekod boleh dieksport untuk simpanan serta semakan
+                        pihak sekolah.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="section-padding how-it-works" id="cara-fungsi">
+        <div class="container">
+            <div class="section-header text-center reveal">
+                <h2 class="section-title">Tiga langkah untuk bermula</h2>
+                <p class="section-desc">Aliran yang jelas daripada pendaftaran sekolah sehingga rekod kehadiran pertama.</p>
+            </div>
+
+            <div class="steps-grid reveal">
+                <div class="step-item">
+                    <div class="step-number">1</div>
+                    <h3>Daftar Sekolah</h3>
+                    <p>Buka akaun DRS sekolah anda.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">2</div>
+                    <h3>Sediakan Kad & Pembaca</h3>
+                    <p>Sambungkan pembaca RFID USB pada komputer di kantin, kemudian daftarkan kad setiap murid RMT.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-number">3</div>
+                    <h3>Imbas & Rekod</h3>
+                    <p>Semasa agihan makanan, murid mengimbas kad dan rekod disimpan secara automatik.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="section-padding" id="harga">
+        <div class="container">
+            <div class="section-header text-center reveal">
+                <h2 class="section-title">Pelan untuk keperluan sekolah</h2>
+                <p class="section-desc">Pilih kapasiti yang sesuai dengan jumlah murid RMT anda.</p>
+            </div>
+
+            <div class="pricing-grid">
+                <!-- Plan 1 -->
+                <div class="price-card reveal">
+                    <div class="price-header">
+                        <h3>Basic</h3>
+                        <div class="price-amount">RM150<span>/tahun pertama</span></div>
+                        <p class="price-desc">Untuk sekolah berkapasiti kecil.</p>
+                    </div>
+
+                    <div class="price-highlight">
+                        <span class="list-icon" aria-hidden="true">✓</span> 1 pembaca RFID dan pemasangan disertakan
+                    </div>
+
+                    <ul class="price-features">
+                        <li><span class="list-icon" aria-hidden="true">✓</span> Sehingga 80 murid RMT</li>
+                        <li><span class="list-icon" aria-hidden="true">✓</span> Akaun pentadbir sekolah</li>
+                        <li><span class="list-icon" aria-hidden="true">✓</span> Laporan kehadiran PDF</li>
+                        <li><span class="list-icon" aria-hidden="true">✓</span> Sokongan teknikal</li>
+                    </ul>
+                    <a href="register_school.php" class="btn btn-outline">Pilih Basic</a>
+                </div>
+
+                <!-- Plan 2 -->
+                <div class="price-card popular reveal">
+                    <div class="popular-badge">Pelan Lengkap</div>
+                    <div class="price-header">
+                        <h3>Pro</h3>
+                        <div class="price-amount">RM300<span>/tahun pertama</span></div>
+                        <p class="price-desc">Untuk kapasiti murid yang lebih fleksibel.</p>
+                    </div>
+
+                    <div class="price-highlight">
+                        <span class="list-icon" aria-hidden="true">✓</span> 1 pembaca RFID dan pemasangan disertakan
+                    </div>
+
+                    <ul class="price-features">
+                        <li><span class="list-icon" aria-hidden="true">✓</span> Murid RMT tanpa had</li>
+                        <li><span class="list-icon" aria-hidden="true">✓</span> Akaun pentadbir sekolah</li>
+                        <li><span class="list-icon" aria-hidden="true">✓</span> Laporan kehadiran lengkap</li>
+                        <li><span class="list-icon" aria-hidden="true">✓</span> Sokongan teknikal</li>
+                    </ul>
+                    <a href="register_school.php" class="btn btn-primary">Pilih Pro</a>
+                </div>
+            </div>
+            <p class="pricing-note">Harga dipaparkan untuk tahun pertama. Kad RFID dijual berasingan dan boleh dibeli
+                sendiri atau melalui pihak kami.</p>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <div class="container reveal">
+        <section class="final-cta">
+            <h2>Sedia untuk digitalisasikan RMT sekolah anda?</h2>
+            <p>Daftar sekolah anda atau hubungi kami untuk mendapatkan penerangan lanjut.</p>
+            <div class="final-cta-actions">
+                <a href="register_school.php" class="btn btn-secondary">Daftar Sekolah</a>
+                <a href="https://wa.me/60107718603?text=Hai%2C%20saya%20berminat%20untuk%20tahu%20lebih%20lanjut%20tentang%20Sistem%20DRS%20(Digitalisasi%20RMT).%20Boleh%20kongsikan%20maklumat%20lanjut%3F"
+                    class="btn btn-outline" target="_blank" rel="noopener noreferrer">Hubungi Melalui WhatsApp</a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <img src="images/DRS_Logo_White.png" alt="DRS Logo" style="height: 40px; width: auto;">
+                    </div>
+                    <p>Sistem Kehadiran Murid RMT Berasaskan RFID. Dibina untuk memudahkan urusan guru sekolah di
+                        Malaysia dengan kos paling optimum.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Pautan Pantas</h4>
+                    <ul>
+                        <li><a href="#ciri-ciri">Ciri-ciri Utama</a></li>
+                        <li><a href="#cara-fungsi">Cara Berfungsi</a></li>
+                        <li><a href="#harga">Senarai Harga</a></li>
+                        <li><a href="index.php">Log Masuk Sistem</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Hubungi Kami</h4>
+                    <ul>
+                        <li><a href="https://wa.me/60107718603?text=Hai%2C%20saya%20perlukan%20bantuan%20berkenaan%20Sistem%20DRS."
+                                target="_blank" rel="noopener noreferrer">Bantuan Teknikal</a></li>
+                        <li><a href="https://wa.me/60107718603?text=Hai%2C%20saya%20ingin%20bertanya%20tentang%20Sistem%20DRS."
+                                target="_blank" rel="noopener noreferrer">WhatsApp Jualan</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2026 Digital Registration System (DRS). Hak Cipta Terpelihara.
+            </div>
+        </div>
+    </footer>
+
+    <div class="demo-video-modal" id="demoVideoModal" role="dialog" aria-modal="true"
+        aria-labelledby="demoVideoTitle" aria-describedby="demoVideoDescription" hidden>
+        <div class="demo-video-backdrop" data-video-close></div>
+        <div class="demo-video-dialog" role="document">
+            <div class="demo-video-header">
+                <div>
+                    <h2 id="demoVideoTitle">Cara DRS berfungsi</h2>
+                    <p id="demoVideoDescription">Daripada sentuhan kad kepada rekod kehadiran masa nyata.</p>
+                </div>
+                <button type="button" class="demo-video-close" data-video-close aria-label="Tutup video">×</button>
+            </div>
+            <video class="demo-video-player" id="demoVideoPlayer" controls playsinline preload="metadata"
+                poster="media/drs-cara-berfungsi-poster.jpg">
+                <source src="media/drs-cara-berfungsi.mp4" type="video/mp4">
+                Pelayar anda tidak menyokong pemain video HTML5.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        // Product explainer video modal
+        const demoVideoOpen = document.getElementById('openDemoVideo');
+        const demoVideoModal = document.getElementById('demoVideoModal');
+        const demoVideoPlayer = document.getElementById('demoVideoPlayer');
+        const demoVideoClose = demoVideoModal.querySelector('.demo-video-close');
+        let demoVideoLastFocus = null;
+
+        function openDemoVideo() {
+            demoVideoLastFocus = document.activeElement;
+            demoVideoModal.hidden = false;
+            document.body.classList.add('demo-video-open');
+            requestAnimationFrame(() => demoVideoModal.classList.add('is-open'));
+            demoVideoClose.focus();
+            demoVideoPlayer.play().catch(() => {});
+        }
+
+        function closeDemoVideo() {
+            demoVideoModal.classList.remove('is-open');
+            demoVideoPlayer.pause();
+            demoVideoPlayer.currentTime = 0;
+            document.body.classList.remove('demo-video-open');
+            window.setTimeout(() => {
+                demoVideoModal.hidden = true;
+                if (demoVideoLastFocus) demoVideoLastFocus.focus();
+            }, 240);
+        }
+
+        demoVideoOpen.addEventListener('click', openDemoVideo);
+        demoVideoModal.querySelectorAll('[data-video-close]').forEach(element => {
+            element.addEventListener('click', closeDemoVideo);
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && !demoVideoModal.hidden) closeDemoVideo();
+        });
+
+        // Mobile Menu Toggle
+        const mobileBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        function setMenu(open) {
+            navLinks.classList.toggle('active', open);
+            mobileBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            mobileBtn.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+            mobileBtn.querySelector('span').textContent = open ? '×' : '☰';
+        }
+
+        mobileBtn.addEventListener('click', () => setMenu(!navLinks.classList.contains('active')));
+        navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false)));
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') setMenu(false);
+        });
+
+        // Scroll Reveal Animation
+        const revealElements = document.querySelectorAll('.reveal');
+
+        const revealOptions = {
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        if ('IntersectionObserver' in window) {
+            const revealOnScroll = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, revealOptions);
+
+            revealElements.forEach(el => revealOnScroll.observe(el));
+        } else {
+            revealElements.forEach(el => el.classList.add('active'));
+        }
+
+        // Trigger active on elements already in viewport on load
+        setTimeout(() => {
+            revealElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 50) {
+                    el.classList.add('active');
+                }
+            });
+        }, 100);
+
+        // Terminal Animation Logic
+        const students = [
+            { id: "M0192", name: "AHMAD SYAHMI BIN ABU", time: "07:15:02 AM" },
+            { id: "M0193", name: "NUR ALYA BATRISYIA", time: "07:15:05 AM" },
+            { id: "M0194", name: "CHONG WEI JIAN", time: "07:15:08 AM" },
+            { id: "M0195", name: "KAVITHA A/P MUTHU", time: "07:15:12 AM" },
+            { id: "M0196", name: "MUHAMMAD HAZIQ", time: "07:15:15 AM" },
+            { id: "M0197", name: "SITI NURHALIZA", time: "07:15:20 AM" },
+            { id: "M0198", name: "DANIAL HAKIM", time: "07:15:23 AM" }
+        ];
+
+        const logList = document.getElementById('logList');
+        const animRipple = document.getElementById('animRipple');
+
+        let currentIndex = 0;
+
+        function addLog(student) {
+            const logItem = document.createElement('div');
+            logItem.className = 'log-item';
+
+            // Format ID with green checkmark to represent success
+            logItem.innerHTML = `
+                <div class="time">${student.time}</div>
+                <div class="name"><span class="id">${student.id}</span> ${student.name}</div>
+                <div class="status" aria-label="Berjaya">✓</div>
+            `;
+
+            logList.insertBefore(logItem, logList.firstChild);
+
+            // Keep only latest 6 items
+            if (logList.children.length > 6) {
+                logList.removeChild(logList.lastChild);
+            }
+        }
+
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            // Sync animation cycle with log addition.
+            setInterval(() => {
+                setTimeout(() => {
+                    animRipple.classList.remove('active');
+                    void animRipple.offsetWidth;
+                    animRipple.classList.add('active');
+
+                    setTimeout(() => {
+                        addLog(students[currentIndex]);
+                        currentIndex = (currentIndex + 1) % students.length;
+                    }, 120);
+                }, 1220);
+            }, 3200);
+        }
+
+        // Initial setup for terminal list
+        students.slice(0, 3).reverse().forEach((student, index) => {
+            setTimeout(() => {
+                addLog(student);
+            }, index * 200);
+        });
+        currentIndex = 3;
+
+        // Update the navbar once per animation frame for smoother scrolling.
+        const navbar = document.querySelector('.navbar');
+        let scrollTicking = false;
+
+        function updateNavbar() {
+            navbar.classList.toggle('scrolled', window.scrollY > 24);
+            scrollTicking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!scrollTicking) {
+                window.requestAnimationFrame(updateNavbar);
+                scrollTicking = true;
+            }
+        }, { passive: true });
+        updateNavbar();
+    </script>
+</body>
+
+</html>

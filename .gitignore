@@ -1,0 +1,8 @@
+.env
+.DS_Store
+storage/private/
+uploads/quotations/
+invoices/
+l.html
+d.html
+*.log

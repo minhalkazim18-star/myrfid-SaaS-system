@@ -1,0 +1,21 @@
+{
+  "name": "Terminal Imbasan RMT",
+  "short_name": "Terminal RMT",
+  "description": "Terminal imbasan kad RFID untuk rekod RMT sekolah.",
+  "lang": "ms",
+  "start_url": "kiosk.php?terminal=1",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#eef4f8",
+  "theme_color": "#0a2540",
+  "icons": [
+    {
+      "src": "images/touch.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
